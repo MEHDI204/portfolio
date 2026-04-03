@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Analytics } from "@vercel/analytics/next";
+import { useState } from 'react';
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { ChevronLeft, ChevronRight, Download, Database } from 'lucide-react';
 
 const OracleCheatSheets = () => {
@@ -1389,6 +1390,8 @@ const OracleCheatSheets = () => {
           }
         }
       `}</style>
+      <Analytics />
+      <SpeedInsights />
     </div>
   );
 };

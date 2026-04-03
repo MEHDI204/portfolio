@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Code2, Mail, Github, Linkedin, ChevronDown, ExternalLink, Cpu, Cloud } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Code2, Mail, Github, Linkedin, ChevronDown, ExternalLink, Cpu, Cloud, Download } from 'lucide-react';
 
 export default function Portfolio() {
   const [scrolled, setScrolled] = useState(false);
@@ -19,6 +19,23 @@ export default function Portfolio() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
+  // Scroll handler for nav buttons
+  const scrollToSection = (sectionId: string) => {
+    if (sectionId === 'accueil') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    const el = document.getElementById(sectionId);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const navItems = [
+    { label: 'Accueil', target: 'accueil' },
+    { label: 'Projets', target: 'projets' },
+    { label: 'Compétences', target: 'competences' },
+    { label: 'Contact', target: 'contact' },
+  ];
+
   const projects = [
     {
       title: "E-commerce Full Stack",
@@ -37,7 +54,7 @@ export default function Portfolio() {
       githubLink: "https://github.com/MEHDI204/weather-station"
     },
     {
-      title: "Système de Gestion",
+      title: "MIPS Employee Management System",
       tech: ["MIPS Assembly", "MARS"],
       description: "Programme optimisé pour gestion d'employés avec algorithmes de tri et statistiques",
       icon: <Cpu className="w-6 h-6" />,
@@ -49,8 +66,23 @@ export default function Portfolio() {
   const skills = {
     "Développement Web": ["Laravel", "React.js", "Inertia.js", "Tailwind CSS", "PHP", "HTML5/CSS3"],
     "Programmation": ["C/C++", "Java", "Python", "SQL", "MIPS Assembly"],
-    "Outils & DevOps": ["Git", "GitHub", "VS Code", "Linux"]
+    "Outils & DevOps": ["Git", "GitHub", "Docker", "Linux"]
   };
+
+  // Memoize particles so random positions stay stable across renders
+  const particles = useMemo(
+    () =>
+      [...Array(50)].map((_, i) => ({
+        id: i,
+        width: Math.random() * 4 + 2,
+        height: Math.random() * 4 + 2,
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        delay: Math.random() * 3,
+        duration: Math.random() * 3 + 2,
+      })),
+    []
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white overflow-hidden">
@@ -74,12 +106,13 @@ export default function Portfolio() {
             EMN
           </div>
           <div className="flex gap-6">
-            {['Accueil', 'Projets', 'Compétences', 'Contact'].map((item) => (
+            {navItems.map((item) => (
               <button
-                key={item}
+                key={item.label}
+                onClick={() => scrollToSection(item.target)}
                 className="hover:text-cyan-400 transition-colors duration-300 relative group"
               >
-                {item}
+                {item.label}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full" />
               </button>
             ))}
@@ -88,28 +121,33 @@ export default function Portfolio() {
       </nav>
 
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center px-6 relative">
+      <section id="accueil" className="min-h-screen flex items-center justify-center px-6 relative">
         <div className="absolute inset-0 overflow-hidden">
-          {[...Array(50)].map((_, i) => (
+          {particles.map((p) => (
             <div
-              key={i}
+              key={p.id}
               className="absolute bg-cyan-400/10 rounded-full animate-pulse"
               style={{
-                width: Math.random() * 4 + 2 + 'px',
-                height: Math.random() * 4 + 2 + 'px',
-                left: Math.random() * 100 + '%',
-                top: Math.random() * 100 + '%',
-                animationDelay: Math.random() * 3 + 's',
-                animationDuration: Math.random() * 3 + 2 + 's'
+                width: p.width + 'px',
+                height: p.height + 'px',
+                left: p.left + '%',
+                top: p.top + '%',
+                animationDelay: p.delay + 's',
+                animationDuration: p.duration + 's'
               }}
             />
           ))}
         </div>
 
         <div className="max-w-4xl text-center z-10 space-y-8">
-          <div className="inline-block px-4 py-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full text-cyan-400 text-sm mb-4 animate-bounce">
-            Disponible pour des opportunités
-          </div>
+          <a
+            href="https://www.linkedin.com/in/el-mehdi-nidkouchi-556430226/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-4 py-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full text-cyan-400 text-sm mb-4 animate-bounce hover:bg-cyan-500/20 transition-colors duration-300"
+          >
+            🚀 Disponible pour des opportunités
+          </a>
 
           <h1 className="text-6xl md:text-7xl font-bold mb-4">
             <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent animate-gradient bg-300%">
@@ -122,16 +160,20 @@ export default function Portfolio() {
           </p>
 
           <p className="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            Passionné par le développement full-stack et l'architecture logicielle.
-            Actuellement en S5 à l'Université Ibn Zohr, je transforme des idées en solutions numériques élégantes.
+            Développeur Full-Stack spécialisé en React.js et Laravel.
+            Actuellement en S6 à l'Université Ibn Zohr, à la recherche d'un stage PFE en développement web.
           </p>
 
-          <div className="flex gap-4 justify-center pt-6">
+          <div className="flex gap-4 justify-center pt-6 flex-wrap">
             <a href="mailto:elmehdinidkouchi@gmail.com" className="px-8 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full font-semibold hover:shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105 transition-all duration-300">
               Me Contacter
             </a>
-            <a href="#projets" className="px-8 py-3 border border-cyan-500/50 rounded-full font-semibold hover:bg-cyan-500/10 transition-all duration-300">
+            <a href="#projets" onClick={(e) => { e.preventDefault(); scrollToSection('projets'); }} className="px-8 py-3 border border-cyan-500/50 rounded-full font-semibold hover:bg-cyan-500/10 transition-all duration-300">
               Voir Projets
+            </a>
+            <a href="/cv.pdf" download className="px-8 py-3 border border-emerald-500/50 rounded-full font-semibold hover:bg-emerald-500/10 text-emerald-400 transition-all duration-300 flex items-center gap-2">
+              <Download className="w-5 h-5" />
+              Télécharger CV
             </a>
           </div>
 
@@ -139,17 +181,18 @@ export default function Portfolio() {
             <a href="https://github.com/MEHDI204" target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-800/50 rounded-full hover:bg-slate-700 hover:scale-110 transition-all duration-300">
               <Github className="w-6 h-6" />
             </a>
-            <a href="https://www.linkedin.com/in/el-mehdi-nidkouchi-556430226/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3BN0HUFsl0Rpe4ecGCI5rd6w%3D%3D" target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-800/50 rounded-full hover:bg-slate-700 hover:scale-110 transition-all duration-300">
+            <a href="https://www.linkedin.com/in/el-mehdi-nidkouchi-556430226/" target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-800/50 rounded-full hover:bg-slate-700 hover:scale-110 transition-all duration-300">
               <Linkedin className="w-6 h-6" />
             </a>
             <a href="mailto:elmehdinidkouchi@gmail.com" className="p-3 bg-slate-800/50 rounded-full hover:bg-slate-700 hover:scale-110 transition-all duration-300">
               <Mail className="w-6 h-6" />
             </a>
           </div>
+        </div>
 
-          <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <ChevronDown className="w-8 h-8 text-cyan-400" />
-          </div>
+        {/* ChevronDown — positioned relative to the section, not the inner div */}
+        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer" onClick={() => scrollToSection('projets')}>
+          <ChevronDown className="w-8 h-8 text-cyan-400" />
         </div>
       </section>
 
@@ -196,7 +239,7 @@ export default function Portfolio() {
                   href={project.githubLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:scale-110 transition-transform"
+                  className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <ExternalLink className="w-5 h-5 text-cyan-400" />
@@ -208,10 +251,10 @@ export default function Portfolio() {
       </section>
 
       {/* Skills Section */}
-      <section className="py-20 px-6 bg-slate-900/30">
+      <section id="competences" className="py-20 px-6 bg-slate-900/30">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-5xl font-bold text-center mb-4">
-            <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
               Compétences
             </span>
           </h2>
@@ -221,17 +264,17 @@ export default function Portfolio() {
             {Object.entries(skills).map(([category, items], idx) => (
               <div
                 key={idx}
-                className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-2xl p-8 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300"
+                className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-2xl p-8 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300"
               >
-                <h3 className="text-2xl font-bold mb-6 text-cyan-400">{category}</h3>
+                <h3 className="text-2xl font-bold mb-6 text-purple-400">{category}</h3>
                 <div className="space-y-3">
                   {items.map((skill, i) => (
                     <div
                       key={i}
                       className="flex items-center gap-3 group cursor-pointer"
                     >
-                      <div className="w-2 h-2 rounded-full bg-cyan-400 group-hover:scale-150 transition-transform duration-300" />
-                      <span className="text-slate-300 group-hover:text-cyan-400 group-hover:translate-x-2 transition-all duration-300">
+                      <div className="w-2 h-2 rounded-full bg-purple-400 group-hover:scale-150 transition-transform duration-300" />
+                      <span className="text-slate-300 group-hover:text-purple-400 group-hover:translate-x-2 transition-all duration-300">
                         {skill}
                       </span>
                     </div>
@@ -244,29 +287,29 @@ export default function Portfolio() {
       </section>
 
       {/* Education Section */}
-      <section className="py-20 px-6">
+      <section id="formation" className="py-20 px-6">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-5xl font-bold text-center mb-16">
-            <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
               Formation
             </span>
           </h2>
 
-          <div className="relative border-l-2 border-cyan-500/30 pl-8 space-y-12">
+          <div className="relative border-l-2 border-amber-500/30 pl-8 space-y-12">
             <div className="relative group">
-              <div className="absolute -left-[41px] w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 border-4 border-slate-900 group-hover:scale-125 transition-transform duration-300" />
+              <div className="absolute -left-[41px] w-8 h-8 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 border-4 border-slate-900 group-hover:scale-125 transition-transform duration-300" />
 
-              <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300">
+              <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700/50 hover:border-amber-500/50 transition-all duration-300">
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <h3 className="text-2xl font-bold text-cyan-400">Licence ILTI</h3>
+                    <h3 className="text-2xl font-bold text-amber-400">Licence ILTI</h3>
                     <p className="text-slate-400">Université Ibn Zohr, Agadir</p>
                   </div>
-                  <span className="px-4 py-1 bg-cyan-500/20 rounded-full text-cyan-400 text-sm">
+                  <span className="px-4 py-1 bg-amber-500/20 rounded-full text-amber-400 text-sm">
                     2023 - Présent
                   </span>
                 </div>
-                <p className="text-slate-300 mb-3">Actuellement en Semestre 5 (S5)</p>
+                <p className="text-slate-300 mb-3">Actuellement en Semestre 6 (S6)</p>
                 <p className="text-slate-400 text-sm">
                   Modules: Développement Web, Bases de Données, Architecture Ordinateurs, Algorithmique, Structures de Données
                 </p>
@@ -276,7 +319,7 @@ export default function Portfolio() {
             <div className="relative group">
               <div className="absolute -left-[41px] w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 border-4 border-slate-900 group-hover:scale-125 transition-transform duration-300" />
 
-              <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300">
+              <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300">
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <h3 className="text-2xl font-bold">Baccalauréat Scientifique</h3>
@@ -296,7 +339,7 @@ export default function Portfolio() {
       <section id="contact" className="py-20 px-6 bg-slate-900/30">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-5xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
               Travaillons Ensemble
             </span>
           </h2>
@@ -308,7 +351,7 @@ export default function Portfolio() {
             <div className="flex gap-4">
               <a
                 href="mailto:elmehdinidkouchi@gmail.com"
-                className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full font-semibold hover:shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105 transition-all duration-300"
+                className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full font-semibold hover:shadow-lg hover:shadow-teal-500/50 transform hover:scale-105 transition-all duration-300"
               >
                 <Mail className="w-5 h-5" />
                 Envoyer un Email
@@ -317,8 +360,6 @@ export default function Portfolio() {
 
             <div className="flex items-center gap-4 text-slate-400">
               <span>📍 Agadir, Maroc</span>
-              <span>•</span>
-              <span>📱 0767719105</span>
             </div>
           </div>
         </div>
@@ -327,7 +368,7 @@ export default function Portfolio() {
       {/* Footer */}
       <footer className="py-8 border-t border-slate-800">
         <div className="max-w-6xl mx-auto px-6 text-center text-slate-400">
-          <p>© 2024 El Mehdi Nidkouchi. Conçu avec passion.</p>
+          <p>© {new Date().getFullYear()} El Mehdi Nidkouchi. Conçu avec passion.</p>
         </div>
       </footer>
     </div>

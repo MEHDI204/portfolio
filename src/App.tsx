@@ -1,10 +1,11 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { Code2, Mail, Github, Linkedin, ChevronDown, ExternalLink, Cpu, Cloud, Download } from 'lucide-react';
+import { Code2, Mail, Github, Linkedin, ChevronDown, ExternalLink, Cpu, Cloud, Download, Menu, X } from 'lucide-react';
 
 const ThreeBackground = lazy(() => import('./ThreeBackground'));
 
 export default function Portfolio() {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -16,10 +17,12 @@ export default function Portfolio() {
   const scrollToSection = (sectionId: string) => {
     if (sectionId === 'accueil') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      setMobileNavOpen(false);
       return;
     }
     const el = document.getElementById(sectionId);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
+    setMobileNavOpen(false);
   };
 
   const navItems = [
@@ -72,12 +75,13 @@ export default function Portfolio() {
       </Suspense>
 
       {/* Navigation */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-900/80 backdrop-blur-lg shadow-lg' : ''}`} style={{ zIndex: 50 }}>
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled || mobileNavOpen ? 'bg-slate-900/80 backdrop-blur-lg shadow-lg' : ''}`} style={{ zIndex: 50 }}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
           <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
             EMN
           </div>
-          <div className="flex gap-6">
+
+          <div className="hidden md:flex gap-6">
             {navItems.map((item) => (
               <button
                 key={item.label}
@@ -86,6 +90,33 @@ export default function Portfolio() {
               >
                 {item.label}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full" />
+              </button>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            aria-label={mobileNavOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+            aria-expanded={mobileNavOpen}
+            onClick={() => setMobileNavOpen((open) => !open)}
+            className="md:hidden inline-flex items-center justify-center rounded-full border border-slate-700/70 bg-slate-900/70 p-2 text-slate-100 transition-colors duration-300 hover:border-cyan-400/50 hover:text-cyan-300"
+          >
+            {mobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ${mobileNavOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'}`}
+        >
+          <div className="mx-4 mb-4 rounded-2xl border border-slate-800/80 bg-slate-950/90 p-3 shadow-2xl shadow-slate-950/40">
+            {navItems.map((item) => (
+              <button
+                key={item.label}
+                onClick={() => scrollToSection(item.target)}
+                className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-slate-200 transition-colors duration-300 hover:bg-slate-800/80 hover:text-cyan-300"
+              >
+                <span>{item.label}</span>
+                <ChevronDown className="-rotate-90 w-4 h-4 text-slate-500" />
               </button>
             ))}
           </div>

@@ -1,22 +1,15 @@
-import { useState, useEffect, useMemo } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Code2, Mail, Github, Linkedin, ChevronDown, ExternalLink, Cpu, Cloud, Download } from 'lucide-react';
+
+const ThreeBackground = lazy(() => import('./ThreeBackground'));
 
 export default function Portfolio() {
   const [scrolled, setScrolled] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
   // Scroll handler for nav buttons
@@ -69,38 +62,17 @@ export default function Portfolio() {
     "Outils & DevOps": ["Git", "GitHub", "Docker", "Linux"]
   };
 
-  // Memoize particles so random positions stay stable across renders
-  const particles = useMemo(
-    () =>
-      [...Array(50)].map((_, i) => ({
-        id: i,
-        width: Math.random() * 4 + 2,
-        height: Math.random() * 4 + 2,
-        left: Math.random() * 100,
-        top: Math.random() * 100,
-        delay: Math.random() * 3,
-        duration: Math.random() * 3 + 2,
-      })),
-    []
-  );
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white overflow-hidden">
-      {/* Animated gradient orb */}
-      <div
-        className="fixed pointer-events-none transition-all duration-1000 ease-out"
-        style={{
-          left: mousePosition.x - 250,
-          top: mousePosition.y - 250,
-          width: '500px',
-          height: '500px',
-          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)',
-          filter: 'blur(40px)',
-        }}
-      />
+      {/* 3D Animated Background */}
+      <Suspense fallback={null}>
+        <ThreeBackground />
+      </Suspense>
 
       {/* Navigation */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-900/80 backdrop-blur-lg shadow-lg' : ''}`}>
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-900/80 backdrop-blur-lg shadow-lg' : ''}`} style={{ zIndex: 50 }}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
             EMN
@@ -121,23 +93,7 @@ export default function Portfolio() {
       </nav>
 
       {/* Hero Section */}
-      <section id="accueil" className="min-h-screen flex items-center justify-center px-6 relative">
-        <div className="absolute inset-0 overflow-hidden">
-          {particles.map((p) => (
-            <div
-              key={p.id}
-              className="absolute bg-cyan-400/10 rounded-full animate-pulse"
-              style={{
-                width: p.width + 'px',
-                height: p.height + 'px',
-                left: p.left + '%',
-                top: p.top + '%',
-                animationDelay: p.delay + 's',
-                animationDuration: p.duration + 's'
-              }}
-            />
-          ))}
-        </div>
+      <section id="accueil" className="min-h-screen flex items-center justify-center px-6 relative" style={{ zIndex: 10 }}>
 
         <div className="max-w-4xl text-center z-10 space-y-8">
           <a
@@ -197,7 +153,7 @@ export default function Portfolio() {
       </section>
 
       {/* Projects Section */}
-      <section id="projets" className="py-20 px-6">
+      <section id="projets" className="py-20 px-6" style={{ position: 'relative', zIndex: 10 }}>
         <div className="max-w-6xl mx-auto">
           <h2 className="text-5xl font-bold text-center mb-4">
             <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
@@ -251,7 +207,7 @@ export default function Portfolio() {
       </section>
 
       {/* Skills Section */}
-      <section id="competences" className="py-20 px-6 bg-slate-900/30">
+      <section id="competences" className="py-20 px-6 bg-slate-900/30" style={{ position: 'relative', zIndex: 10 }}>
         <div className="max-w-6xl mx-auto">
           <h2 className="text-5xl font-bold text-center mb-4">
             <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
@@ -287,7 +243,7 @@ export default function Portfolio() {
       </section>
 
       {/* Education Section */}
-      <section id="formation" className="py-20 px-6">
+      <section id="formation" className="py-20 px-6" style={{ position: 'relative', zIndex: 10 }}>
         <div className="max-w-4xl mx-auto">
           <h2 className="text-5xl font-bold text-center mb-16">
             <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
@@ -336,7 +292,7 @@ export default function Portfolio() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-20 px-6 bg-slate-900/30">
+      <section id="contact" className="py-20 px-6 bg-slate-900/30" style={{ position: 'relative', zIndex: 10 }}>
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-5xl font-bold mb-6">
             <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
@@ -366,7 +322,7 @@ export default function Portfolio() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 border-t border-slate-800">
+      <footer className="py-8 border-t border-slate-800" style={{ position: 'relative', zIndex: 10 }}>
         <div className="max-w-6xl mx-auto px-6 text-center text-slate-400">
           <p>© {new Date().getFullYear()} El Mehdi Nidkouchi. Conçu avec passion.</p>
         </div>

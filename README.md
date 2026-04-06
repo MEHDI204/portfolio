@@ -138,7 +138,6 @@ const projects = [
 - **GitHub** : [@MEHDI204](https://github.com/MEHDI204)
 - **LinkedIn** : [El Mehdi Nidkouchi](https://www.linkedin.com/in/el-mehdi-nidkouchi-556430226/)
 - **Localisation** : Agadir, Maroc
-- **Téléphone** : 0767719105
 
 ## 🎓 À Propos
 

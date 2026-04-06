@@ -172,7 +172,10 @@ export default function ThreeBackground() {
 
     const shapeColors = [CYAN, BLUE, PURPLE, INDIGO, TEAL];
 
-    for (let i = 0; i < 56; i++) {
+    const isMobile = window.innerWidth < 768;
+    const shapeCount = isMobile ? 20 : 56;
+
+    for (let i = 0; i < shapeCount; i++) {
       const depth = Math.random();
       const col = shapeColors[Math.floor(Math.random() * shapeColors.length)];
       const scale = 0.55 + Math.random() * 1.55;
@@ -231,7 +234,7 @@ export default function ThreeBackground() {
     // ══════════════════════════════════════════════════════════════
     //  3. CIRCUIT NODES & CONNECTIONS
     // ══════════════════════════════════════════════════════════════
-    const nodeCount = 110;
+    const nodeCount = isMobile ? 40 : 110;
     const nodePositions: THREE.Vector3[] = [];
     const nodeGroup = new THREE.Group();
     const nodeDots: THREE.Mesh[] = [];
@@ -359,8 +362,16 @@ export default function ThreeBackground() {
     let time = 0;
     const clock = new THREE.Clock();
 
+    let isPaused = false;
+    const onVisibilityChange = () => {
+      isPaused = document.hidden;
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
     const animate = () => {
       frameId = requestAnimationFrame(animate);
+      if (isPaused) return;
+
       const delta = clock.getDelta();
       time += delta;
 
@@ -463,6 +474,7 @@ export default function ThreeBackground() {
     // ── Cleanup ──
     return () => {
       cancelAnimationFrame(frameId);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('resize', onResize);
       scene.traverse((child) => {

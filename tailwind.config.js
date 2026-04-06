@@ -8,4 +8,5 @@ export default {
         extend: {},
     },
     plugins: [],
+    safelist: ['bg-300%', 'animate-gradient'],
 }

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://portfolio-elmehdi-nidkouchi.vercel.app/sitemap.xml

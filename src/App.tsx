@@ -39,7 +39,8 @@ export default function Portfolio() {
       description: "Application web monolithique moderne avec interface responsive et gestion dynamique du panier",
       icon: <Code2 className="w-6 h-6" />,
       color: "from-blue-500 to-cyan-500",
-      githubLink: "https://github.com/MEHDI204/e-commerce-platform.git"
+      githubLink: "https://github.com/MEHDI204/e-commerce-platform.git",
+      liveLink: "https://e-commerce-platform-production-6590.up.railway.app"
     },
     {
       title: "Station Météorologique",
@@ -165,13 +166,13 @@ export default function Portfolio() {
           </div>
 
           <div className="flex gap-6 justify-center pt-8">
-            <a href="https://github.com/MEHDI204" target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-800/50 rounded-full hover:bg-slate-700 hover:scale-110 transition-all duration-300">
+            <a href="https://github.com/MEHDI204" aria-label="Profil GitHub" target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-800/50 rounded-full hover:bg-slate-700 hover:scale-110 transition-all duration-300">
               <Github className="w-6 h-6" />
             </a>
-            <a href="https://www.linkedin.com/in/el-mehdi-nidkouchi-556430226/" target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-800/50 rounded-full hover:bg-slate-700 hover:scale-110 transition-all duration-300">
+            <a href="https://www.linkedin.com/in/el-mehdi-nidkouchi-556430226/" aria-label="Profil LinkedIn" target="_blank" rel="noopener noreferrer" className="p-3 bg-slate-800/50 rounded-full hover:bg-slate-700 hover:scale-110 transition-all duration-300">
               <Linkedin className="w-6 h-6" />
             </a>
-            <a href="mailto:elmehdinidkouchi@gmail.com" className="p-3 bg-slate-800/50 rounded-full hover:bg-slate-700 hover:scale-110 transition-all duration-300">
+            <a href="mailto:elmehdinidkouchi@gmail.com" aria-label="Envoyer un email" className="p-3 bg-slate-800/50 rounded-full hover:bg-slate-700 hover:scale-110 transition-all duration-300">
               <Mail className="w-6 h-6" />
             </a>
           </div>
@@ -222,15 +223,33 @@ export default function Portfolio() {
                   ))}
                 </div>
 
-                <a
-                  href={project.githubLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <ExternalLink className="w-5 h-5 text-cyan-400" />
-                </a>
+                <div className="absolute top-4 right-4 flex gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  {/* @ts-ignore - liveLink is optional */}
+                  {project.liveLink && (
+                    <a
+                      href={(project as any).liveLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:scale-110 transition-transform"
+                      onClick={(e) => e.stopPropagation()}
+                      aria-label="Live Demo"
+                    >
+                      <button className="flex items-center gap-1 px-3 py-1 bg-cyan-500/20 text-cyan-400 rounded-full text-xs font-semibold hover:bg-cyan-500/30">
+                        Live Demo
+                      </button>
+                    </a>
+                  )}
+                  <a
+                    href={project.githubLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:scale-110 transition-transform flex items-center justify-center p-1.5 bg-slate-800/80 rounded-full"
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label="Code Source"
+                  >
+                    <ExternalLink className="w-5 h-5 text-cyan-400" />
+                  </a>
+                </div>
               </div>
             ))}
           </div>
